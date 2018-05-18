@@ -26,27 +26,43 @@ async function checkHeaders()
 {
 	await driver.get(mainURL);
 	let scriptText = `
-		var req = new XMLHttpRequest();
+		var req = new XMLHttpRequest(),
+			commonServers = ['apache', 'nginx'],
+			isGenericServer = false;
 		req.open('GET', document.location, false);
 		req.send(null);
-		var commonServers = ['apache', 'nginx'];
 		var server = req.getResponseHeader('server');
-		if (server && commonServers.indexOf(server.toLowerCase()) === -1)
+
+		for ( var i = 0; i < commonServers.length; i++ )
+		{
+			var commonServer = commonServers[i];
+
+			if ( String(server.toLowerCase()).indexOf(commonServer) !== -1 )			{
+				isGenericServer = true;
+				break;
+			}
+		}
+
+		if (server && !isGenericServer)
 		{
 			return server;
+		}
+
+		else
+		{
+			return false;
 		}
 	`;
 
 	let hostingProviderHeader = await driver.executeScript(scriptText);
 
-	if (hostingProviderHeader)
-	{
-		console.log(`The hosting provider is ${hostingProviderHeader}`);
-	}
-	else
+	if (!hostingProviderHeader)
 	{
 		secondLookup();
+		return;
 	}
+
+	console.log(`The hosting provider is ${hostingProviderHeader}`);
 
 	await driver.quit();
 }
@@ -137,7 +153,7 @@ function getSiteParam()
 
 		driver = new Builder()
 			.forBrowser('chrome')
-			.setChromeOptions(new chrome.Options().headless())
+			//.setChromeOptions(new chrome.Options().headless())
 			.build();
 
 		mainURL = site;
