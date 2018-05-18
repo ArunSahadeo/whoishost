@@ -3,20 +3,26 @@
 const	{Builder, By, Key, until} = require('selenium-webdriver'),
 		readline = require('readline');
 
-var driver;
+var driver, mainURL;
+
+async function checkHeaders()
+{
+	await driver.quit();
+}
 
 async function getProvider()
 {
 	await driver.wait(until.elementLocated(By.xpath('//li[strong[contains(text(), "Web Hosting Provider")]]')));
+
 	let hostingProvider = await driver.findElement(By.xpath('//li[strong[contains(text(), "Web Hosting Provider")]]')).getText();
 
 	console.log(`The hosting provider is ${hostingProvider}`);
 	await driver.quit();
 }
 
-async function main(siteParam)
+async function main()
 {
-	siteParam = siteParam.replace(/(http:\/\/|https:\/\/)/, '');
+	let siteParam = mainURL.replace(/(http:\/\/|https:\/\/)/, '');
 	let hostLookupURI = 'https://www.webhostinghero.com/who-is-hosting/%tempURL%/';
 	hostLookupURI = hostLookupURI.replace(/%tempURL%/, encodeURI(siteParam));
 
@@ -70,7 +76,9 @@ function getSiteParam()
 			.setChromeOptions(new chrome.Options().headless())
 			.build();
 
-		main(site);
+		mainURL = site;
+
+		main();
 		prompt1.close();
 	});
 }
