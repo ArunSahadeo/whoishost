@@ -61,14 +61,22 @@ async function getProvider()
 				checkHeaders();
 				return;
 			}
+		});
 
-			if ( error.name === 'NoSuchElementError' )
+	let hostingProvider = await driver.findElement(By.xpath('//li[strong[contains(text(), "Web Hosting Provider")]]')).catch(function(error)
+		{
+			if (error.name === 'NoSuchElementError')
 			{
 				return;
 			}
 		});
 
-	let hostingProvider = await driver.findElement(By.xpath('//li[strong[contains(text(), "Web Hosting Provider")]]')).getText();
+	if (!hostingProvider)
+	{
+		return;
+	}
+
+	hostingProvider = hostingProvider.getText();
 
 	hostingProvider = hostingProvider.replace(/Web Hosting Provider:\s+/, '');
 
