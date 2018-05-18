@@ -7,12 +7,45 @@ var driver, mainURL;
 
 async function checkHeaders()
 {
+	await driver.get(mainURL);
+	let scriptText = `
+		var req = new XMLHttpRequest();
+		req.open('GET', document.location, false);
+		req.send(null);
+		var commonServers = ['apache', 'nginx'];
+		var server = req.getResponseHeader('server');
+		if (server && commonServers.indexOf(server.toLowerCase()) === -1)
+		{
+			return server;
+		}
+	`;
+
+	let hostingProviderHeader = await driver.executeScript(scriptText);
+
+	if (hostingProviderHeader)
+	{
+		console.log(`The hosting provider is ${hostingProviderHeader}`);
+	}
+
 	await driver.quit();
 }
 
 async function getProvider()
 {
-	await driver.wait(until.elementLocated(By.xpath('//li[strong[contains(text(), "Web Hosting Provider")]]')));
+	await driver.wait(until.elementLocated(By.xpath('//li[strong[contains(text(), "Web Hosting Provider")]]')), 1000 * 20)
+		.catch(function(error)
+		{
+			if ( error.name === 'TimeoutError' )
+			{
+				checkHeaders();
+				return;
+			}
+
+			if ( error.name === 'NoSuchElementError' )
+			{
+				return;
+			}
+		});
 
 	let hostingProvider = await driver.findElement(By.xpath('//li[strong[contains(text(), "Web Hosting Provider")]]')).getText();
 
