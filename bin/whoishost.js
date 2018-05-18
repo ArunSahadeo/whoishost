@@ -20,6 +20,8 @@ async function secondLookup()
 
 	console.log(`The hosting provider is ${hostingProvider}`);
 
+	await driver.quit();
+
 }
 
 async function checkHeaders()
@@ -69,34 +71,24 @@ async function checkHeaders()
 
 async function getProvider()
 {
+	let shouldContinue = true;
+
 	await driver.wait(until.elementLocated(By.xpath('//li[strong[contains(text(), "Web Hosting Provider")]]')), 1000 * 20)
 		.catch(function(error)
 		{
 			if ( error.name === 'TimeoutError' )
 			{
 				checkHeaders();
-				return;
+				shouldContinue = false;
 			}
 		});
 
-	let hostingProvider = await driver.findElement(By.xpath('//li[strong[contains(text(), "Web Hosting Provider")]]')).catch(function(error)
-		{
-			if (error.name === 'NoSuchElementError')
-			{
-				return;
-			}
-		});
+	if (!shouldContinue) return;
 
-	if (!hostingProvider)
-	{
-		return;
-	}
-
-	hostingProvider = hostingProvider.getText();
-
-	hostingProvider = hostingProvider.replace(/Web Hosting Provider:\s+/, '');
+	let hostingProvider = await driver.findElement(By.xpath('//li[strong[contains(text(), "Web Hosting Provider")]]')).getText();
 
 	console.log(`The hosting provider is ${hostingProvider}`);
+
 	await driver.quit();
 }
 
@@ -153,7 +145,7 @@ function getSiteParam()
 
 		driver = new Builder()
 			.forBrowser('chrome')
-			//.setChromeOptions(new chrome.Options().headless())
+			.setChromeOptions(new chrome.Options().headless())
 			.build();
 
 		mainURL = site;
