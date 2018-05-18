@@ -1,0 +1,19 @@
+{
+  "name": "whoishost",
+  "version": "1.0.0",
+  "description": "Get the hosting provider for any website.",
+  "main": "index.js",
+  "bin": {
+    "whoishost": "bin/whoishost.js"
+  },
+  "keywords": [
+    "DNS query"
+  ],
+  "author": "Arun Sahadeo",
+  "license": "GPL",
+  "dependencies": {
+    "jsdom": "^11.10.0",
+    "request": "^2.86.0",
+    "selenium-webdriver": "^4.0.0-alpha.1"
+  }
+}
