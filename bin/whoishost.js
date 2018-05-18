@@ -7,8 +7,8 @@ var driver;
 
 async function getProvider()
 {
-	await driver.wait(until.elementLocated(By.css('ul.wih-summary')));
-	let hostingProvider = await driver.findElement(By.css('ul.wih-summary > li > a')).getText();
+	await driver.wait(until.elementLocated(By.xpath('//li[strong[contains(text(), "Web Hosting Provider")]]')));
+	let hostingProvider = await driver.findElement(By.xpath('//li[strong[contains(text(), "Web Hosting Provider")]]')).getText();
 
 	console.log(`The hosting provider is ${hostingProvider}`);
 	await driver.quit();
