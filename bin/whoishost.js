@@ -5,6 +5,23 @@ const	{Builder, By, Key, until} = require('selenium-webdriver'),
 
 var driver, mainURL;
 
+async function secondLookup()
+{
+	let hostLookupURI = 'https://www.whoishostingthis.com/?q=%TEMPURL%',
+		siteParam = mainURL.replace(/(http:\/\/|https:\/\/)/, '');
+
+	hostLookupURI = hostLookupURI.replace(/%TEMPURL%/, siteParam);
+
+	await driver.get(hostLookupURI);
+
+	let hostingProvider = await driver.findElement(By.css('ul.details li:first-child')).getText();
+
+	hostingProvider = hostingProvider.replace(/Hosting provider:\s+/, '');
+
+	console.log(`The hosting provider is ${hostingProvider}`);
+
+}
+
 async function checkHeaders()
 {
 	await driver.get(mainURL);
@@ -25,6 +42,10 @@ async function checkHeaders()
 	if (hostingProviderHeader)
 	{
 		console.log(`The hosting provider is ${hostingProviderHeader}`);
+	}
+	else
+	{
+		secondLookup();
 	}
 
 	await driver.quit();
@@ -49,6 +70,8 @@ async function getProvider()
 
 	let hostingProvider = await driver.findElement(By.xpath('//li[strong[contains(text(), "Web Hosting Provider")]]')).getText();
 
+	hostingProvider = hostingProvider.replace(/Web Hosting Provider:\s+/, '');
+
 	console.log(`The hosting provider is ${hostingProvider}`);
 	await driver.quit();
 }
@@ -56,8 +79,8 @@ async function getProvider()
 async function main()
 {
 	let siteParam = mainURL.replace(/(http:\/\/|https:\/\/)/, '');
-	let hostLookupURI = 'https://www.webhostinghero.com/who-is-hosting/%tempURL%/';
-	hostLookupURI = hostLookupURI.replace(/%tempURL%/, encodeURI(siteParam));
+	let hostLookupURI = 'https://www.webhostinghero.com/who-is-hosting/%TEMPURL%/';
+	hostLookupURI = hostLookupURI.replace(/%TEMPURL%/, encodeURI(siteParam));
 
 	try
 	{
