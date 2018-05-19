@@ -12,9 +12,23 @@ async function secondLookup()
 
 	hostLookupURI = hostLookupURI.replace(/%TEMPURL%/, siteParam);
 
+	var hostingProvider;	
+
 	await driver.get(hostLookupURI);
 
-	let hostingProvider = await driver.findElement(By.css('ul.details li:first-child')).getText();
+	try
+	{
+		hostingProvider = await driver.findElement(By.css('ul.details li:first-child')).getText();
+	}
+
+	catch (error)
+	{
+		if (error.name === 'NoSuchElementError')
+		{
+			console.log('There was an error. Please try again');
+			process.exit(1);
+		}
+	}
 
 	hostingProvider = hostingProvider.replace(/Hosting provider:\s+/, '');
 
@@ -86,6 +100,8 @@ async function getProvider()
 	if (!shouldContinue) return;
 
 	let hostingProvider = await driver.findElement(By.xpath('//li[strong[contains(text(), "Web Hosting Provider")]]')).getText();
+
+	hostingProvider = hostingProvider.replace(/Web Hosting Provider:\s+/, ''); 
 
 	console.log(`The hosting provider is ${hostingProvider}`);
 

@@ -1,6 +1,6 @@
 {
   "name": "whoishost",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Get the hosting provider for any website.",
   "main": "index.js",
   "bin": {
