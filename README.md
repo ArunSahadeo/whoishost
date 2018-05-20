@@ -2,6 +2,10 @@
 
 Simple command-line NPM executable for figuring out a website's hosting provider.
 
+## Prerequisites
+
+You will need `chromedriver` installed and available on your `PATH` variable, as this package relies on the Chrome browser.
+
 ## Installation
 
 Make sure you have the latest Node and NPM (I am using Node v9.11.1), then:
