@@ -49,6 +49,8 @@ async function checkHeaders()
 		req.send(null);
 		var server = req.getResponseHeader('server');
 
+		if (!server) return false;
+
 		for ( var i = 0; i < commonServers.length; i++ )
 		{
 			var commonServer = commonServers[i];
