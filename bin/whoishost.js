@@ -5,6 +5,12 @@ const	{Builder, By, Key, until} = require('selenium-webdriver'),
 
 var driver, mainURL;
 
+async function closeDriver()
+{
+	await driver.quit();
+	process.exit(1);
+}
+
 async function secondLookup()
 {
 	let hostLookupURI = 'https://www.whoishostingthis.com/?q=%TEMPURL%',
@@ -26,7 +32,7 @@ async function secondLookup()
 		if (error.name === 'NoSuchElementError')
 		{
 			console.log('There was an error. Please try again');
-			process.exit(1);
+			closeDriver();
 		}
 	}
 
